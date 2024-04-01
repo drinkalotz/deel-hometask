@@ -62,9 +62,11 @@ const payJob = async (req, res) => {
       transaction,
     });
     if (!job) {
+      await transaction.rollback();
       return res.status(404).end();
     }
     if (job.price >= job.Contract.Client.balance) {
+      await transaction.rollback();
       return res.status(400).json({ error: 'Insufficient funds' });
     } else {
       job.Contract.Client.balance -= job.price;
