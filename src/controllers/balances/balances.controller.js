@@ -36,6 +36,7 @@ const depositBalance = async (req, res) => {
   );
   const sum = jobs.reduce((acc, job) => acc + job.price, 0);
   if (sum * 0.25 < deposit) {
+    await transaction.rollback();
     return res.status(400).send({ error: 'Deposit is too high' });
   }
   try {
